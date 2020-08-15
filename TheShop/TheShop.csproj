@@ -42,14 +42,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\DatabaseDriver.cs" />
+    <Compile Include="Log\Logger.cs" />
+    <Compile Include="Models\Article.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\ISupplier.cs" />
     <Compile Include="ShopService.cs" />
+    <Compile Include="Service\Supplier1.cs" />
+    <Compile Include="Service\Supplier2.cs" />
+    <Compile Include="Service\Supplier3.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

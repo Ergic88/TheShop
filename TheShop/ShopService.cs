@@ -1,197 +1,72 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using TheShop.Models;
+using TheShop.Log;
+using TheShop.Database;
+using TheShop.Service;
+using System.Collections.Generic;
 
 namespace TheShop
 {
-	public class ShopService
-	{
-		private DatabaseDriver DatabaseDriver;
-		private Logger logger;
+    public class ShopService
+    {
+        private DatabaseDriver DatabaseDriver;
+        private Logger logger;
 
-		private Supplier1 Supplier1;
-		private Supplier2 Supplier2;
-		private Supplier3 Supplier3;
-		
-		public ShopService()
-		{
-			DatabaseDriver = new DatabaseDriver();
-			logger = new Logger();
-			Supplier1 = new Supplier1();
-			Supplier2 = new Supplier2();
-			Supplier3 = new Supplier3();
-		}
+        private List<ISupplier> Suppliers;
 
-		public void OrderAndSellArticle(int id, int maxExpectedPrice, int buyerId)
-		{
-			#region ordering article
 
-			Article article = null;
-			Article tempArticle = null;
-			var articleExists = Supplier1.ArticleInInventory(id);
-			if (articleExists)
-			{
-				tempArticle = Supplier1.GetArticle(id);
-				if (maxExpectedPrice < tempArticle.ArticlePrice)
-				{
-					articleExists = Supplier2.ArticleInInventory(id);
-					if (articleExists)
-					{
-						tempArticle = Supplier2.GetArticle(id);
-						if (maxExpectedPrice < tempArticle.ArticlePrice)
-						{
-							articleExists = Supplier3.ArticleInInventory(id);
-							if (articleExists)
-							{
-								tempArticle = Supplier3.GetArticle(id);
-								if (maxExpectedPrice < tempArticle.ArticlePrice)
-								{
-									article = tempArticle;
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			article = tempArticle;
-			#endregion
 
-			#region selling article
+        public ShopService()
+        {
+            DatabaseDriver = new DatabaseDriver();
+            logger = new Logger();
+            Suppliers = new List<ISupplier>() 
+            {
+                new Supplier1(), new Supplier2(),  new Supplier3()
+            };
+        }
 
-			if (article == null)
-			{
-				throw new Exception("Could not order article");
-			}
+        public Article OrderArticle(int id, int maxExpectedPrice)
+        {
+           Article article = Suppliers.Where(s => s.ArticleInInventory(id))
+                               .Select(s => s.GetArticle(id))
+                               .Where(a => a.Price <= maxExpectedPrice)
+                               .OrderBy(a => a.Price)
+                               .FirstOrDefault();
 
-			logger.Debug("Trying to sell article with id=" + id);
+            if (article == null)
+            {
+                throw new Exception("Could not order article");
+            }
 
-			article.IsSold = true;
-			article.SoldDate = DateTime.Now;
-			article.BuyerUserId = buyerId;
-			
-			try
-			{
-				DatabaseDriver.Save(article);
-				logger.Info("Article with id=" + id + " is sold.");
-			}
-			catch (ArgumentNullException ex)
-			{
-				logger.Error("Could not save article with id=" + id);
-				throw new Exception("Could not save article with id");
-			}
-			catch (Exception)
-			{
-			}
+            return article;
+        }
 
-			#endregion
-		}
+        public void SellArticle(int buyerId, Article article)
+        {          
+            logger.Debug("Trying to sell article with id=" + article.ID);
 
-		public Article GetById(int id)
-		{
-			return DatabaseDriver.GetById(id);
-		}
-	}
+            article.IsSold = true;
+            article.SoldDate = DateTime.Now;
+            article.BuyerUserId = buyerId;
 
-	//in memory implementation
-	public class DatabaseDriver
-	{
-		private List<Article> _articles = new List<Article>();
+            try
+            {
+                DatabaseDriver.Save(article);
+                logger.Info("Article with id=" + article.ID + " is sold.");
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"Could not save article with id= {article.ID} \n {ex.ToString()}");
+                throw new Exception($"Could not save article with id= {article.ID}", ex);
+            }
+        }
 
-		public Article GetById(int id)
-		{
-            return _articles.Single(x => x.ID == id);
-		}
-
-		public void Save(Article article)
-		{
-			_articles.Add(article);
-		}
-	}
-
-	public class Logger
-	{
-		public void Info(string message)
-		{
-			Console.WriteLine("Info: " + message);
-		}
-
-		public void Error(string message)
-		{
-			Console.WriteLine("Error: " + message);
-		}
-
-		public void Debug(string message)
-		{
-			Console.WriteLine("Debug: " + message);
-		}
-	}
-
-	public class Supplier1
-	{
-		public bool ArticleInInventory(int id)
-		{
-			return true;
-		}
-
-		public Article GetArticle(int id)
-		{
-			return new Article()
-			{
-				ID = 1,
-				Name_of_article = "Article from supplier1",
-				ArticlePrice = 458
-			};
-		}
-	}
-
-	public class Supplier2
-	{
-		public bool ArticleInInventory(int id)
-		{
-			return true;
-		}
-
-		public Article GetArticle(int id)
-		{
-			return new Article()
-			{
-				ID = 1,
-				Name_of_article = "Article from supplier2",
-				ArticlePrice = 459
-			};
-		}
-	}
-
-	public class Supplier3
-	{
-		public bool ArticleInInventory(int id)
-		{
-			return true;
-		}
-
-		public Article GetArticle(int id)
-		{
-			return new Article()
-			{
-				ID = 1,
-				Name_of_article = "Article from supplier3",
-				ArticlePrice = 460
-			};
-		}
-	}
-
-	public class Article
-	{
-		public int ID { get; set; }
-
-		public string Name_of_article { get; set; }
-
-		public int ArticlePrice { get; set; }
-		public bool IsSold { get; set; }
-
-		public DateTime SoldDate { get; set; }
-		public int BuyerUserId { get; set; }
-	}
+        public Article GetArticleById(int id)
+        {
+            return DatabaseDriver.GetById(id);
+        }
+    }
 
 }

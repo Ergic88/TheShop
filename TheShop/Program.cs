@@ -7,11 +7,16 @@ namespace TheShop
 		private static void Main(string[] args)
 		{
 			var shopService = new ShopService();
-
 			try
-			{
+			{ 
+
 				//order and sell
-				shopService.OrderAndSellArticle(1, 20, 10);
+				var article = shopService.OrderArticle(1, 20);
+				
+				
+				shopService.SellArticle(10, article);
+				
+				
 			}
 			catch (Exception ex)
 			{
@@ -21,7 +26,7 @@ namespace TheShop
 			try
 			{
 				//print article on console
-				var article = shopService.GetById(1);
+				var article = shopService.GetArticleById(1);
 				Console.WriteLine("Found article with ID: " + article.ID);
 			}
 			catch (Exception ex)
@@ -32,7 +37,7 @@ namespace TheShop
 			try
 			{
 				//print article on console				
-				var article = shopService.GetById(12);
+				var article = shopService.GetArticleById(12);
 				Console.WriteLine("Found article with ID: " + article.ID);
 			}
 			catch (Exception ex)
