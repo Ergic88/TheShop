@@ -43,6 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\DatabaseDriver.cs" />
+    <Compile Include="Database\IDatabase.cs" />
+    <Compile Include="Exceptions\ArticleNotFoundException.cs" />
+    <Compile Include="Exceptions\ArticleTooExpensiveException.cs" />
+    <Compile Include="Log\ILogger.cs" />
     <Compile Include="Log\Logger.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Program.cs" />

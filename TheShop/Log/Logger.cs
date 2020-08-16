@@ -2,7 +2,7 @@
 
 namespace TheShop.Log
 {
-    public class Logger
+    public class Logger : ILogger
 	{
 		public void Info(string message)
 		{

@@ -1,22 +1,30 @@
-﻿using TheShop.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TheShop.Models;
 
 namespace TheShop.Service
 {
     public class Supplier3 : ISupplier
 	{
+		private List<Article> Articles = new List<Article>{new Article()
+		{
+			ID = 1,
+			Name = "Article from supplier3",
+			Price = 460
+		}};
+
+		public Supplier3()
+		{
+		}
+
 		public bool ArticleInInventory(int id)
 		{
-			return true;
+			return Articles.Where(a => a.ID == id).Any();
 		}
 
 		public Article GetArticle(int id)
 		{
-			return new Article()
-			{
-				ID = 1,
-				Name = "Article from supplier3",
-				Price = 460
-			};
+			return Articles.FirstOrDefault(a => a.ID == id);
 		}
 	}
 

@@ -2,50 +2,41 @@
 
 namespace TheShop
 {
-	internal class Program
-	{
-		private static void Main(string[] args)
-		{
-			var shopService = new ShopService();
-			try
-			{ 
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            var shopService = new ShopService();
+            try
+            {
 
-				//order and sell
-				var article = shopService.OrderArticle(1, 20);
-				
-				
-				shopService.SellArticle(10, article);
-				
-				
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex);
-			}
+                //order and sell
+                var article = shopService.OrderArticle(1, 20);
+                shopService.SellArticle(10, article);
 
-			try
-			{
-				//print article on console
-				var article = shopService.GetArticleById(1);
-				Console.WriteLine("Found article with ID: " + article.ID);
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("Article not found: " + ex);
-			}
+                //print article on console
+                article = shopService.GetArticleById(1);
+                if (article == null)
+                {
+                    Console.WriteLine("Article not found: ");
+                }
+                Console.WriteLine("Found article with ID: " + article.ID);
 
-			try
-			{
-				//print article on console				
-				var article = shopService.GetArticleById(12);
-				Console.WriteLine("Found article with ID: " + article.ID);
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("Article not found: " + ex);
-			}
+                //print article on console				
+                article = shopService.GetArticleById(12);
+                if (article == null)
+                {
+                    Console.WriteLine("Article not found: ");
+                }
+                Console.WriteLine("Found article with ID: " + article.ID);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
-			Console.ReadKey();
-		}
-	}
+            Console.ReadKey();
+        }
+
+    }
 }
