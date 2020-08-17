@@ -1,7 +1,8 @@
 using NUnit.Framework;
 using System;
-using TheShop.Exceptions;
 using TheShop.Models;
+using TheShop.Services;
+using TheShop.Services.Exceptions;
 
 namespace TheShop.Test
 {

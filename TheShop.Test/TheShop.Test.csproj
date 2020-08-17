@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TheShop.Database\TheShop.Database.csproj" />
+    <ProjectReference Include="..\TheShop.Models\TheShop.Models.csproj" />
+    <ProjectReference Include="..\TheShop.Services\TheShop.Services.csproj" />
+    <ProjectReference Include="..\TheShop.Suppliers\TheShop.Suppliers.csproj" />
     <ProjectReference Include="..\TheShop\TheShop.csproj" />
   </ItemGroup>
 
